@@ -1,0 +1,186 @@
+<head>
+    <title>myTravelogue</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    </head>
+    <style>
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+/* Global styles */
+body {
+    font-family: "Open Sans", Arial, sans-serif;
+    background-color: aquamarine;
+}
+
+.intro {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.intro h1 {
+    font-size: 4rem;
+    font-family: 'Satisfy', cursive;
+    margin-bottom: 10px;
+}
+
+.intro p {
+    font-size: 2rem;
+    font-family: 'Satisfy', cursive;
+    margin-bottom: 20px;
+}
+
+.content {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.img {
+    margin: 0 auto; /* Centering the image */
+}
+
+.search-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.search-bar {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 20px;
+    width: 300px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#viewDiv {
+    height: 400px; /* Set a fixed height for the map container */
+    margin-top: 20px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    background-color: #ccc;
+    padding: 10px 0;
+    font-size: 1rem;
+}
+
+.contact {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1rem;
+}
+.button-map{padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.search-map{
+    text-align: center;
+    margin-top: 20px;
+}
+@media (max-width: 768px) {
+    .intro h1 {
+        font-size: 3rem;
+    }
+    .intro p {
+        font-size: 1.5rem;
+    }
+    .search-bar {
+        width: 250px;
+    }
+}
+#worldmap{
+    height: 400px;
+}
+    </style>
+      
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Satisfy&display=swap" rel="stylesheet">
+    <body>
+        <div class="intro">
+        <h1 class="fontfam">#My_Travelogue</h1>
+        <p class="fontfam">a new age traveller's account</p>
+        </div>
+        <div class="content">
+            <img src="./traveller.jpg" class="img"/>
+        </div>
+        <div class="search-container">
+            <select name="country" id="country">
+                <option>select a country</option>
+                <option value="India">India</option>
+                <option value="Canada">Canada</option>
+                <option value="USA">USA</option>
+            </select>
+            <button class="search-button" onclick="displayMap()">View Map</button>
+        </div>
+        <br>
+        <div class="search-map" >
+            <button class="button-map" onclick="displayMyMap()">View My Places</button>
+        </div>
+        <br>
+        <div id="worldmap"></div>
+        <br>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        function displayMyMap() {
+            // Initialize the map
+            var mymap = L.map('worldmap').setView([51.505, -0.09], 13);
+
+            // Add a tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(mymap);
+
+            // Add markers or any other map-related functionality here
+        }
+    </script>
+        
+        <br>
+        
+        <script>
+            function displayMap() {
+      var country = document.getElementById("country").value;
+
+      if (country) {
+        // Open a new page with the map of the selected country
+        window.open("map.html?country=" + country, "_blank");
+      } else {
+        alert("Please select a country.");
+      }
+    }
+
+    
+        </script>
+        <div id="viewDiv"></div> 
+        <footer>Copyright</footer>
+        <a href="https://github.com/kripa1804" class="contact">About me</a>   
+        
+    </body>

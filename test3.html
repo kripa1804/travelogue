@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display Image on Map</title>
+  <!-- Include Leaflet CSS and JavaScript -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #map {
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <select name="country" id="country">
+    <option value="">Select a country</option>
+    <option value="england">England</option>
+    <option value="france">France</option>
+    <option value="germany">Germany</option>
+  </select>
+  <button onclick="displayImageOverlay()">Display Image</button>
+
+  <script>
+    var map = L.map('map').setView([0, 0], 2); // Initialize map with default view
+
+    // Add tile layer (you can use any map provider)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker;
+
+    function displayImageOverlay() {
+      var selectedCountry = document.getElementById("country").value;
+      var imageUrl, latitude, longitude;
+
+      // Define image URL and coordinates based on the selected country
+      switch (selectedCountry) {
+        case "england":
+          imageUrl = "http://localhost:8000/england-london-bridge.jpg";
+          latitude = 51.5074;
+          longitude = -0.1278;
+          break;
+        case "france":
+          imageUrl = "http://localhost:8000/france-eiffel-tower.jpg";
+          latitude = 48.8588;
+          longitude = 2.2946;
+          break;
+        case "germany":
+          imageUrl = "http://localhost:8000/england-london-bridge.jpg";
+          latitude = 52.5163;
+          longitude = 13.3777;
+          break;
+        default:
+          alert("Please select a country.");
+          return;
+      }
+
+      // Remove existing marker and image overlay
+      if (marker) {
+        map.removeLayer(marker);
+      }
+      if (map.hasLayer(imageOverlay)) {
+        map.removeLayer(imageOverlay);
+      }
+
+      // Update map view
+      map.setView([latitude, longitude], 10);
+
+      // Add marker
+      marker = L.marker([latitude, longitude]).addTo(map);
+
+      // Add image overlay
+      var imageBounds = [[latitude - 0.01, longitude - 0.01], [latitude + 0.01, longitude + 0.01]];
+      var imageOverlay = L.imageOverlay(imageUrl, imageBounds).addTo(map);
+    }
+  </script>
+</body>
+</html>

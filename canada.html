@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Display Image on Map</title>
+  <!-- Include Leaflet CSS and JavaScript -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    #map {
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    // Parse your JSON response
+    var jsonResponse = {
+  "images": []
+};
+
+// Initialize map
+var map = L.map('map').setView([0, 0], 10); // Default view until images are added
+
+// Add tile layer (you can use any map provider)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Function to add a new image with marker and image overlay
+function addImage(imagePath, latitude, longitude) {
+  var image = {
+    "imagePath": imagePath,
+    "latitude": latitude,
+    "longitude": longitude
+  };
+  jsonResponse.images.push(image);
+
+  // Add marker
+  L.marker([latitude, longitude]).addTo(map);
+
+  // Add image overlay
+  var imageBounds = [[latitude - 0.01, longitude - 0.01], [latitude + 0.01, longitude + 0.01]];
+  L.imageOverlay(imagePath, imageBounds).addTo(map);
+
+  // Adjust map view to fit all markers
+  var bounds = L.latLngBounds();
+  jsonResponse.images.forEach(function(img) {
+    bounds.extend([img.latitude, img.longitude]);
+  });
+  map.fitBounds(bounds);
+}
+
+// Function to fetch image info from Flask endpoint and call addImage function
+function fetchAndAddImage() {
+  // Replace 'http://localhost:5000' with the URL where your Flask app is hosted
+  const url = 'http://localhost:5000/get_image_info';
+
+  // Fetch data from Flask endpoint
+  fetch(url)
+  .then(response => {
+    // Check if response is OK
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse JSON response
+    return response.json();
+  })
+  .then(data => {
+    // Call addImage function with image info obtained from Flask response
+    addImage(data.imagePath, data.latitude, data.longitude);
+  })
+  .catch(error => {
+    // Handle errors
+    console.error('There was a problem with the fetch operation:', error);
+  });
+}
+
+// Call the function to fetch image info and add image when the page loads
+fetchAndAddImage();
+
+  </script>
+</body>
+</html>

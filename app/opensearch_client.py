@@ -14,7 +14,7 @@ class OpenSearchClient:
         )
 
     
-    def create_document(self, index, body=None, doc_id=None):
+    def index_document(self, index, body, doc_id=None):
         response = self.client.index(index=index, body=body, id=doc_id)
         return response
 
