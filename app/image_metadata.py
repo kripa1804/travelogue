@@ -4,6 +4,7 @@ from typing import List
 
 @dataclass
 class ImageMetadata:
+    image_path: str = field(default=None)
     datetime_original: str = field(default=None)
     gps_latitude: List[float] = field(default_factory=list)
     gps_latitude_ref: str = field(default=None)
@@ -19,8 +20,9 @@ class ImageMetadata:
         return cls(**json.loads(json_str))
     
     @classmethod
-    def from_exif_image(cls, exif_image):
+    def from_exif_image(cls, exif_image, image_path=None):
         return cls(
+            image_path=image_path,
             datetime_original=exif_image.get("datetime_original"),
             gps_latitude=exif_image.get("gps_latitude"),
             gps_latitude_ref=exif_image.get("gps_latitude_ref"),
