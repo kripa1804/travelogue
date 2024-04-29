@@ -23,7 +23,7 @@ for image_file in image_files:
     image_path = os.path.join(directory, image_file)
     exif_image = ExifImage(image_path)
 
-    image_metadata = ImageMetadata.from_exif_image(exif_image, image_path)
+    image_metadata = ImageMetadata.from_exif_image(exif_image, image_file)
     val_str = image_metadata.to_json()
     val = json.loads(val_str)
 
@@ -34,7 +34,6 @@ for image_file in image_files:
 
     val['gps_latitude'] = gps_lat_dec
     val['gps_longitude'] = gps_lon_dec
-    val['image_path'] = image_path
 
     val_updated_str = json.dumps(val)
     print(val_updated_str)

@@ -150,17 +150,80 @@ footer {
         <br>
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        function displayMyMap() {
-            // Initialize the map
-            var mymap = L.map('worldmap').setView([51.505, -0.09], 13);
+    function addImage(data, mymap) {
+        // Loop through each object in the array
+data.forEach(function(obj) {
+    // Access and process each object's properties
+    console.log(obj); // Output the entire object
 
-            // Add a tile layer
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(mymap);
+    // Access specific properties
+    var _source = obj._source
 
-            // Add markers or any other map-related functionality here
-        }
+    console.log(_source.image_path); // Replace 'propertyName' with the actual property name
+
+    var image = {
+    "imagePath": "http://localhost:8000/" + _source.image_path,
+    "latitude": _source.gps_latitude,
+    "longitude": _source.gps_longitude
+  };
+
+  // Add marker
+  L.marker([image.latitude, image.longitude]).addTo(mymap);
+
+  // Add image overlay
+  var imageBounds = [[image.latitude - 0.01, image.longitude - 0.01], [image.latitude + 0.01, image.longitude + 0.01]];
+  L.imageOverlay(image.imagePath, imageBounds).addTo(mymap);
+
+  // Adjust map view to fit all markers
+  var bounds = L.latLngBounds();
+//   jsonResponse.images.forEach(function(img) {
+//     bounds.extend([img.latitude, img.longitude]);
+//   });
+//   mymap.fitBounds(bounds);
+});
+
+}
+
+// Function to fetch image info from Flask endpoint and call addImage function
+function fetchAndAddImage(mymap) {
+  const url = 'http://localhost:5000/images';
+
+  // Fetch data from Flask endpoint
+  fetch(url)
+  .then(response => {
+    // Check if response is OK
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Parse JSON response
+    return response.json();
+  })
+  .then(data => {
+    // Call addImage function with image info obtained from Flask response
+    console.log(data)
+    addImage(data, mymap);
+  })
+  .catch(error => {
+    // Handle errors
+    console.error('There was a problem with the fetch operation:', error);
+  });
+}
+
+function displayMyMap() {
+    // Initialize the map
+    var mymap = L.map('worldmap').setView([51.505, -0.09], 13);
+
+    // Add a tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(mymap);
+
+    // Call the function to fetch image info and add image when the page loads
+fetchAndAddImage(mymap);
+    
+
+    // Add markers or any other map-related functionality here
+}
     </script>
         
         <br>
